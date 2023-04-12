@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Menu</title>
+</head>
+<style>
+    td {
+        /* border: 1px solid black; */
+        width: 300px;
+    }
+</style>
+<body>
+    <h2>
+        register
+    </h2>
+    <input type="text" id="name" placeholder="name"/>
+    <input type="text" id="password" placeholder="password"/>
+    <button id="register">register</button>
+
+<button>logout</button>
+<script>
+
+    var timeColumn = document.querySelector("#timeColumn");
+    var downloadColumn = document.querySelector("#downloadColumn");
+    var uploadColumn = document.querySelector("#uploadColumn");
+
+    var time = 0;
+    var download = 0;
+    var upload = 0;
+
+
+
+    var register = document.querySelector("#register");
+    register.addEventListener("click", function() {
+        var name = document.querySelector("#name").value;
+        var password = document.querySelector("#password").value;
+        fetch("http://localhost:8080/register_user", {
+            method: "POST",
+	    mode: "cors",
+            headers: {
+                "Content-Type": "application/json",
+		"Access-Control-Allow-Origin":'*'
+            },
+            body: JSON.stringify({
+                username: name,
+                password: password
+            })
+        }).then(function(response) {
+            return response.text();
+        }).then(function(text) {
+            console.log(text);
+        });
+    });
+
+</script>
+</body>
+</html>

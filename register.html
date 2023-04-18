@@ -35,7 +35,7 @@
     register.addEventListener("click", function() {
         var name = document.querySelector("#name").value;
         var password = document.querySelector("#password").value;
-        fetch("http://localhost:8080/register_user", {
+        fetch("http://10.1.0.1:8082/register_user", {
             method: "POST",
 	    mode: "cors",
             headers: {

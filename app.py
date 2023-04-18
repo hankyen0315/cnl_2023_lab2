@@ -5,26 +5,29 @@ import pandas as pd
  
 app = Flask(__name__)
 #CORS(app,origins="http://localhost:8080")
-cors = CORS(app, resources={r"/*": {"origins": "*"}})
+cors = CORS(app, origins='*')
 #@app.route('/register_user', methods=['OPTIONS'])
 #def test_option():
 #    return jsonify({'status': "ok"})
 
-@app.route('/', methods=['GET'])
-def index():
-    return render_template('register.html')
+#@app.route('/', methods=['GET'])
+#def index():
+#    return render_template('register.html')
 
 
 @app.route('/register_user', methods=['POST','OPTIONS'])
 def register_user():
     if request.method == 'OPTIONS':
+        print('dedede')
         response = jsonify()
         response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers['Access-Control-Allow-Origin'] = 'Content-Type'
+        response.headers['Access-Control-Allow-Headers'] = '*'
+        response.headers['Access-Control-Allow-Methods'] = '*'
+        #response.headers['Access-Control-Allow-Origin'] = 'Content-Type'
         return response
 
     data = request.get_json()
- 
+    print("not option") 
     username = data['username']
     password = data['password']
     
@@ -40,7 +43,20 @@ def register_user():
     cmd = 'INSERT INTO radcheck (username, attribute, op, value) VALUES (%s, %s, %s, %s)'
     val = (username, "Cleartext-Password", ":=", password)
     cursor.execute(cmd, val)
- 
+    # new add
+    cmd = 'INSERT INTO radusergroup (username, groupname) VALUES (%s, %s)'
+    val = (username, "users")
+    cursor.execute(cmd, val)
+
+    cmd = 'INSERT INTO radcheck (username, attribute, op, value) VALUES (%s, %s, %s, %s)'
+    val = (username, "Max-Daily-Traffic", ":=", "50000000")
+    cursor.execute(cmd, val)
+
+    cmd = 'INSERT INTO radcheck (username, attribute, op, value) VALUES (%s, %s, %s, %s)'
+    val = (username, "Max-Daily-Session", ":=", "86400")
+    cursor.execute(cmd, val)
+    # new add
+     
     raddb.commit()
     print(cursor.rowcount, ', user: {} inserted'.format(username))
  
@@ -76,4 +92,4 @@ def get_traffic():
     return jsonify({'input_traffic': input_traffic, 'output_traffic': output_traffic})
  
 if __name__ == '__main__':
-    app.run(host='10.1.0.1', port=8081)
+    app.run(host='10.1.0.1', port=8082)
